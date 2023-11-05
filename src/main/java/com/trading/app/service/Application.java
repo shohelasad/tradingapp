@@ -1,4 +1,4 @@
-package com.trading.app;
+package com.trading.app.service;
 
 import com.trading.app.lib.Algo;
 import com.trading.app.service.SignalHandler;
