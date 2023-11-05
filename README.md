@@ -1,0 +1,2 @@
+# tradingapp
+Handle trading signal
