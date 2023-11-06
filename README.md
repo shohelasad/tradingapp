@@ -15,14 +15,7 @@ POST: "/api/signals": This endpoint is used for creating new signals based on a 
 * Flyway database migration
 * Docker
 
-
 # How to run
-
-### Run only test cases
-
-```sh
-mvn test -Dspring.profiles.active=test
-```
 
 ### Package the application as a JAR file
 
@@ -35,6 +28,12 @@ mvn clean install -DskipTests
 
 ```sh
 docker-compose up -d --build
+```
+
+### Run only test cases
+
+```sh
+mvn test -Dspring.profiles.active=test
 ```
 ### Docker cleanup
 

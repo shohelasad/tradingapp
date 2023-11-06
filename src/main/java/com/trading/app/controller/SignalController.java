@@ -1,7 +1,7 @@
 package com.trading.app.controller;
 
-import com.trading.app.dto.SignalSpec;
-import com.trading.app.entity.Signal;
+import com.trading.app.dto.SignalRequest;
+import com.trading.app.dto.SignalResponse;
 import com.trading.app.exception.BadRequestException;
 import com.trading.app.util.SignalHandler;
 import com.trading.app.util.SignalHandlerImpl;
@@ -23,10 +23,9 @@ public class SignalController {
     }
 
     @PostMapping
-    public ResponseEntity<Signal> createSignal(@RequestBody SignalSpec signalSpec) {
+    public ResponseEntity<SignalResponse> createSignal(@RequestBody SignalRequest signalSpec) {
         log.info("Adding signal with: {}", signalSpec);
-        Signal signal = signalService.saveSignal(signalSpec);
-        return ResponseEntity.ok(signal);
+        return ResponseEntity.ok(signalService.saveSignal(signalSpec));
     }
 
     @PostMapping("/{signalId}")

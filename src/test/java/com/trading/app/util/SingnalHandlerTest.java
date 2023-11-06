@@ -3,7 +3,7 @@ package com.trading.app.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.Action;
-import com.trading.app.dto.SignalSpec;
+import com.trading.app.dto.SignalRequest;
 import com.trading.app.entity.Signal;
 import com.trading.app.lib.Algo;
 import com.trading.app.service.SignalService;
@@ -14,12 +14,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 
+@ActiveProfiles("test")
 @SpringBootTest
 public class SingnalHandlerTest {
 
@@ -42,7 +44,7 @@ public class SingnalHandlerTest {
 
     @Test
     public void testHandleSignalWithValidSignal() throws JsonProcessingException {
-        SignalSpec signalSpec = getSampleSignalSpec();
+        SignalRequest signalSpec = getSampleSignalSpec();
         Signal savedSignal = getSampleSignal(signalSpec);
         when(signalService.getSignalById(1)).thenReturn(savedSignal);
         signalHandler.handleSignal(1);
@@ -54,52 +56,39 @@ public class SingnalHandlerTest {
         signalHandler.handleSignal(2);
     }
 
-    private SignalSpec getSampleSignalSpec() {
-        SignalSpec signalSpec = new SignalSpec();
+    private SignalRequest getSampleSignalSpec() {
         List<Action> actionList = new ArrayList<>();
-
         // Add 'setUp' action
-        Action setUpAction = new Action();
-        setUpAction.setName("setUp");
-        setUpAction.setParameters(new ArrayList<>());
+        Action setUpAction = new Action("setUp", new ArrayList<>());
         actionList.add(setUpAction);
 
         // Add 'performCalc' action
-        Action performCalcAction = new Action();
-        performCalcAction.setName("performCalc");
-        performCalcAction.setParameters(new ArrayList<>());
+        Action performCalcAction = new Action("performCalc", new ArrayList<>());
         actionList.add(performCalcAction);
 
         // Add 'submitToMarket' action
-        Action submitToMarketAction = new Action();
-        submitToMarketAction.setName("submitToMarket");
-        submitToMarketAction.setParameters(new ArrayList<>());
+        Action submitToMarketAction = new Action("submitToMarket", new ArrayList<>());
         actionList.add(submitToMarketAction);
 
         // Add 'setAlgoParam' action with parameters
-        Action setAlgoParamAction = new Action();
-        setAlgoParamAction.setName("setAlgoParam");
         List<Integer> parameters = new ArrayList<>();
         parameters.add(1);
         parameters.add(60);
-        setAlgoParamAction.setParameters(parameters);
+        Action setAlgoParamAction = new Action("setAlgoParam", parameters);
         actionList.add(setAlgoParamAction);
 
         // Add 'reverse' action
-        Action reverseAction = new Action();
-        reverseAction.setName("reverse");
-        reverseAction.setParameters(new ArrayList<>());
+        Action reverseAction = new Action("reverse", new ArrayList<>());
         actionList.add(reverseAction);
 
-        signalSpec.setActions(actionList);
-        return signalSpec;
+        return new SignalRequest(actionList);
     }
 
-    private Signal getSampleSignal(SignalSpec signalSpec) {
+    private Signal getSampleSignal(SignalRequest signalSpec) {
         Signal signal = new Signal();
         String jsonActions = null;
         try {
-            jsonActions = objectMapper.writeValueAsString(signalSpec.getActions());
+            jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

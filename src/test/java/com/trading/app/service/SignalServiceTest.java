@@ -3,7 +3,8 @@ package com.trading.app.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.Action;
-import com.trading.app.dto.SignalSpec;
+import com.trading.app.dto.SignalRequest;
+import com.trading.app.dto.SignalResponse;
 import com.trading.app.entity.Signal;
 import com.trading.app.exception.ResourceNotFoundException;
 import com.trading.app.repository.SignalRepository;
@@ -13,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +41,19 @@ public class SignalServiceTest {
 
     @Test
     public void testSaveSignal() throws Exception {
-        SignalSpec signalSpec = getSampleSignalSpec();
+        SignalRequest signalSpec = getSampleSignalSpec();
         Signal savedSignal = getSampleSignal(signalSpec);
         savedSignal.setId(1);
 
         when(signalRepository.save(Mockito.any(Signal.class))).thenReturn(savedSignal);
-        Signal result = signalService.saveSignal(signalSpec);
+        SignalResponse result = signalService.saveSignal(signalSpec);
 
-        assertEquals(savedSignal.getId(), result.getId());
+        assertEquals(savedSignal.getId(), result.id());
     }
 
     @Test
     public void testSaveSignalWithInvalidData() throws Exception {
-        SignalSpec signalSpec = new SignalSpec(); // Invalid data
+        SignalRequest signalSpec = new SignalRequest(new ArrayList<>()); // Invalid data
         when(signalRepository.save(Mockito.any(Signal.class))).thenThrow(new IllegalArgumentException("Invalid signal data"));
         try {
             signalService.saveSignal(signalSpec);
@@ -86,22 +86,19 @@ public class SignalServiceTest {
         });
     }
 
-    private SignalSpec getSampleSignalSpec() {
-        SignalSpec signalSpec = new SignalSpec();
+    private SignalRequest getSampleSignalSpec() {
         List<Action> actionList = new ArrayList<>();
-        Action action = new Action();
-        action.setName("setUp");
-        action.setParameters(new ArrayList<>());
+        Action action = new Action("setUp", new ArrayList<>());
         actionList.add(action);
 
-        return signalSpec;
+        return new SignalRequest(actionList);
     }
 
-    private Signal getSampleSignal(SignalSpec signalSpec) {
+    private Signal getSampleSignal(SignalRequest signalSpec) {
         Signal signal = new Signal();
         String jsonActions = null;
         try {
-            jsonActions = objectMapper.writeValueAsString(signalSpec.getActions());
+            jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
