@@ -23,12 +23,14 @@ public class SignalController {
 
     @PostMapping
     public ResponseEntity<Signal> createSignal(@RequestBody SignalSpec signalSpec) {
+        log.info("Adding signal with: {}", signalSpec);
         Signal signal = signalService.saveSignal(signalSpec);
         return ResponseEntity.ok(signal);
     }
 
     @PostMapping("/{signalId}")
     public ResponseEntity<String> sendSignal(@PathVariable int signalId) {
+        log.info("Adding signal Id: " + signalId);
         if (signalId == 0) {
             throw new RuntimeException("Signal Id cannot be negative!");
         }

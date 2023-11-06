@@ -27,12 +27,14 @@ public class SignalHandlerImpl implements SignalHandler {
 
     @Override
     public void handleSignal(int signalId) {
-        Signal signalSpecification = signalService.getSignalById(signalId);
-        if (signalSpecification != null) {
+        log.info("Handle signal with signalId: " + signalId);
+        Signal signalSpec = signalService.getSignalById(signalId);
+        if (signalSpec != null) {
             List<Action> actions = null;
             try {
-                actions = objectMapper.readValue(signalSpecification.getActions(),  new TypeReference<List<Action>>() {});
+                actions = objectMapper.readValue(signalSpec.getActions(),  new TypeReference<List<Action>>() {});
             } catch (JsonProcessingException e) {
+                log.info("Invalid signal data: " + e.getMessage());
                 throw new RuntimeException(e);
             }
             processSignal(actions);
