@@ -5,6 +5,7 @@ import com.trading.app.dto.SignalSpec;
 import com.trading.app.entity.Signal;
 import com.trading.app.repository.SignalRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 @Service
 public class SignalService {
@@ -25,5 +26,10 @@ public class SignalService {
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid signal data: " + e.getMessage());
         }
+    }
+
+    public Signal getSignalById(int signalId) {
+        return signalRepository.findById(signalId)
+                .orElseThrow(() -> new ResourceAccessException("Signal not found for ID: " + signalId));
     }
 }

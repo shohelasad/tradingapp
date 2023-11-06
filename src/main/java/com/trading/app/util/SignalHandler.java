@@ -1,4 +1,4 @@
-package com.trading.app.service;
+package com.trading.app.util;
 
 /**
  * This is an upcall from our trading system, and we cannot change it.

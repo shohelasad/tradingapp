@@ -1,12 +1,14 @@
-package com.trading.app.service;
+package com.trading.app.util;
 
 import com.trading.app.lib.Algo;
-import com.trading.app.service.SignalHandler;
+import com.trading.app.util.SignalHandler;
+import org.springframework.stereotype.Component;
 
 /**
  * This is your team’s code and should be changed as you see fit.
  */
-public class Application implements SignalHandler {
+@Component
+public class SignalHandlerImpl implements SignalHandler {
     public void handleSignal(int signal) {
         Algo algo = new Algo();
 
