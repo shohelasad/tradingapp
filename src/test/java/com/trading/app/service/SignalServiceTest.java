@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.Action;
 import com.trading.app.dto.SignalSpec;
 import com.trading.app.entity.Signal;
+import com.trading.app.exception.ResourceNotFoundException;
 import com.trading.app.repository.SignalRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,7 +81,7 @@ public class SignalServiceTest {
 
         when(signalRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-        assertThrows(ResourceAccessException.class, () -> {
+        assertThrows(ResourceNotFoundException.class, () -> {
             signalService.getSignalById(signalId);
         });
     }
