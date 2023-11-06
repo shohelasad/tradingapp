@@ -3,7 +3,7 @@ package com.trading.app.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.Action;
-import com.trading.app.dto.SignalSpec;
+import com.trading.app.dto.SignalRequest;
 import com.trading.app.entity.Signal;
 import com.trading.app.service.SignalService;
 import com.trading.app.util.SignalHandlerImpl;
@@ -50,13 +50,10 @@ class SignalControllerTest {
     }
 
     @Test
-    void createSignalVValidRequestReturns200() throws Exception {
-        SignalSpec signalSpec = getSampleSignalSpec();
-        Signal mockSignal = getSampleSignal(signalSpec);
-
-        Mockito.when(signalService.saveSignal(signalSpec)).thenReturn(mockSignal);
-
+    void createSignalValidRequestReturns200() throws Exception {
+        SignalRequest signalSpec = getSampleSignalSpec();
         String requestJson = objectMapper.writeValueAsString(signalSpec);
+
         mockMvc.perform(MockMvcRequestBuilders.post("/api/signals")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
@@ -75,8 +72,8 @@ class SignalControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
-    private SignalSpec getSampleSignalSpec() {
-        SignalSpec signalSpec = new SignalSpec();
+    private SignalRequest getSampleSignalSpec() {
+        SignalRequest signalSpec = new SignalRequest();
         List<Action> actionList = new ArrayList<>();
         Action action = new Action();
         action.setName("setUp");
@@ -86,7 +83,7 @@ class SignalControllerTest {
         return signalSpec;
     }
 
-    private Signal getSampleSignal(SignalSpec signalSpec) {
+    private Signal getSampleSignal(SignalRequest signalSpec) {
         Signal signal = new Signal();
         String jsonActions = null;
         try {

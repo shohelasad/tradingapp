@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignalSpec {
+public class SignalRequest {
     private List<Action> actions;
 }

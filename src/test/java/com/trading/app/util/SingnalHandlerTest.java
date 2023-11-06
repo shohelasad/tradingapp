@@ -3,7 +3,7 @@ package com.trading.app.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.Action;
-import com.trading.app.dto.SignalSpec;
+import com.trading.app.dto.SignalRequest;
 import com.trading.app.entity.Signal;
 import com.trading.app.lib.Algo;
 import com.trading.app.service.SignalService;
@@ -14,12 +14,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 
+@ActiveProfiles("test")
 @SpringBootTest
 public class SingnalHandlerTest {
 
@@ -42,7 +44,7 @@ public class SingnalHandlerTest {
 
     @Test
     public void testHandleSignalWithValidSignal() throws JsonProcessingException {
-        SignalSpec signalSpec = getSampleSignalSpec();
+        SignalRequest signalSpec = getSampleSignalSpec();
         Signal savedSignal = getSampleSignal(signalSpec);
         when(signalService.getSignalById(1)).thenReturn(savedSignal);
         signalHandler.handleSignal(1);
@@ -54,8 +56,8 @@ public class SingnalHandlerTest {
         signalHandler.handleSignal(2);
     }
 
-    private SignalSpec getSampleSignalSpec() {
-        SignalSpec signalSpec = new SignalSpec();
+    private SignalRequest getSampleSignalSpec() {
+        SignalRequest signalSpec = new SignalRequest();
         List<Action> actionList = new ArrayList<>();
 
         // Add 'setUp' action
@@ -95,7 +97,7 @@ public class SingnalHandlerTest {
         return signalSpec;
     }
 
-    private Signal getSampleSignal(SignalSpec signalSpec) {
+    private Signal getSampleSignal(SignalRequest signalSpec) {
         Signal signal = new Signal();
         String jsonActions = null;
         try {
