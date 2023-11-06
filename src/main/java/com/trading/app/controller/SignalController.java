@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/signals")
-@Validated
 public class SignalController {
     private final SignalService signalService;
 
@@ -24,7 +23,7 @@ public class SignalController {
 
     @PostMapping
     public ResponseEntity<Signal> createSignal(@RequestBody SignalSpec signalSpec) {
-        Signal signal = signalService.createSignal(signalSpec);
+        Signal signal = signalService.saveSignal(signalSpec);
         return ResponseEntity.ok(signal);
     }
 }
