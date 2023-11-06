@@ -12,12 +12,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -57,6 +59,30 @@ public class SignalServiceTest {
         } catch (IllegalArgumentException e) {
             assertTrue(e.getMessage().contains("Invalid signal data"));
         }
+    }
+
+    @Test
+    public void testGetSignalByIdValidSignal() {
+        int signalId = 1;
+        Signal expectedSignal = new Signal();
+        expectedSignal.setId(signalId);
+
+        when(signalRepository.findById(signalId)).thenReturn(Optional.of(expectedSignal));
+
+        Signal result = signalService.getSignalById(signalId);
+
+        assertEquals(expectedSignal, result);
+    }
+
+    @Test
+    public void testGetSignalByIdInvalidSignal() {
+        int signalId = 2;
+
+        when(signalRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceAccessException.class, () -> {
+            signalService.getSignalById(signalId);
+        });
     }
 
     private SignalSpec getSampleSignalSpec() {

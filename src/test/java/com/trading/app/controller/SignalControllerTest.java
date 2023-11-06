@@ -6,8 +6,10 @@ import com.trading.app.dto.Action;
 import com.trading.app.dto.SignalSpec;
 import com.trading.app.entity.Signal;
 import com.trading.app.service.SignalService;
+import com.trading.app.util.SignalHandlerImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,8 +23,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @ActiveProfiles("test")
-@WebMvcTest(SignalController.class)
+@WebMvcTest({SignalController.class, SignalHandlerImpl.class})
 class SignalControllerTest {
 
     @Autowired
@@ -34,13 +38,19 @@ class SignalControllerTest {
     @MockBean
     private SignalService signalService;
 
+    private SignalHandlerImpl signalHandler;
+
+    @InjectMocks
+    private SignalController signalController;
+
     @BeforeEach
     void setup() {
+        signalHandler = new SignalHandlerImpl(signalService, objectMapper);
         Mockito.reset(signalService);
     }
 
     @Test
-    void createSignal_ValidRequest_Returns200() throws Exception {
+    void createSignalVValidRequestReturns200() throws Exception {
         SignalSpec signalSpec = getSampleSignalSpec();
         Signal mockSignal = getSampleSignal(signalSpec);
 
@@ -51,8 +61,18 @@ class SignalControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andReturn();
+    }
+
+    @Test
+    public void testSendSignalValidSignalId() throws Exception {
+        int validSignalId = 1;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/api/signals/{signalId}", validSignalId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     private SignalSpec getSampleSignalSpec() {
