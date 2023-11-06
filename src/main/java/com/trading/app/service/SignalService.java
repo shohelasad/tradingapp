@@ -3,6 +3,7 @@ package com.trading.app.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.SignalSpec;
 import com.trading.app.entity.Signal;
+import com.trading.app.exception.ResourceNotFoundException;
 import com.trading.app.repository.SignalRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,6 @@ public class SignalService {
     public Signal getSignalById(int signalId) {
         log.info("Fetch Signal with signalId: " + signalId);
         return signalRepository.findById(signalId)
-                .orElseThrow(() -> new ResourceAccessException("Signal not found for ID: " + signalId));
+                .orElseThrow(() -> new ResourceNotFoundException("Signal not found for ID: " + signalId));
     }
 }

@@ -2,6 +2,7 @@ package com.trading.app.controller;
 
 import com.trading.app.dto.SignalSpec;
 import com.trading.app.entity.Signal;
+import com.trading.app.exception.BadRequestException;
 import com.trading.app.util.SignalHandler;
 import com.trading.app.util.SignalHandlerImpl;
 import com.trading.app.service.SignalService;
@@ -32,7 +33,7 @@ public class SignalController {
     public ResponseEntity<String> sendSignal(@PathVariable int signalId) {
         log.info("Adding signal Id: " + signalId);
         if (signalId == 0) {
-            throw new RuntimeException("Signal Id cannot be negative!");
+            throw new BadRequestException("Signal Id cannot be negative!");
         }
         signalHandler.handleSignal(signalId);
         return ResponseEntity.ok().build();
