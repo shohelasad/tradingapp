@@ -1,43 +1,76 @@
 package com.trading.app.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trading.app.dto.Action;
+import com.trading.app.entity.Signal;
 import com.trading.app.lib.Algo;
-import com.trading.app.util.SignalHandler;
-import org.springframework.stereotype.Component;
+import com.trading.app.service.SignalService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-/**
- * This is your team’s code and should be changed as you see fit.
- */
-@Component
+import java.util.List;
+
+@Slf4j
+@Service
 public class SignalHandlerImpl implements SignalHandler {
-    public void handleSignal(int signal) {
-        Algo algo = new Algo();
+    private final SignalService signalService;
+    private final ObjectMapper objectMapper;
+    private final Algo algo;
 
-        switch (signal) {
-            case 1:
-                algo.setUp();
-                algo.setAlgoParam(1,60);
-                algo.performCalc();
-                algo.submitToMarket();
-                break;
+    public SignalHandlerImpl(SignalService signalService, ObjectMapper objectMapper) {
+        this.signalService = signalService;
+        this.objectMapper = objectMapper;
+        this.algo = new Algo();
+    }
 
-            case 2:
-                algo.reverse();
-                algo.setAlgoParam(1,80);
-                algo.submitToMarket();
-                break;
-
-            case 3:
-                algo.setAlgoParam(1,90);
-                algo.setAlgoParam(2,15);
-                algo.performCalc();
-                algo.submitToMarket();
-                break;
-
-            default:
-                algo.cancelTrades();
-                break;
+    @Override
+    public void handleSignal(int signalId) {
+        Signal signalSpecification = signalService.getSignalById(signalId);
+        if (signalSpecification != null) {
+            List<Action> actions = null;
+            try {
+                actions = objectMapper.readValue(signalSpecification.getActions(),  new TypeReference<List<Action>>() {});
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+            processSignal(actions);
+        } else {
+            algo.cancelTrades();
         }
-
         algo.doAlgo();
+    }
+
+    private void processSignal(List<Action> actions) {
+        actions.forEach(action -> {
+            String actionName = action.getName();
+            switch (actionName) {
+                case "setUp":
+                    algo.setUp();
+                    break;
+                case "setAlgoParam":
+                    if (action.getParameters().size() == 2) {
+                        int param = action.getParameters().get(0);
+                        int value = action.getParameters().get(1);
+                        algo.setAlgoParam(param, value);
+                    }
+                    break;
+                case "performCalc":
+                    algo.performCalc();
+                    break;
+                case "submitToMarket":
+                    algo.submitToMarket();
+                    break;
+                case "cancelTrades":
+                    algo.cancelTrades();
+                    break;
+                case "reverse":
+                    algo.reverse();
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 }
