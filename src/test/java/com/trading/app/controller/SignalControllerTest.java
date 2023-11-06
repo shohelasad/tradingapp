@@ -73,21 +73,18 @@ class SignalControllerTest {
     }
 
     private SignalRequest getSampleSignalSpec() {
-        SignalRequest signalSpec = new SignalRequest();
         List<Action> actionList = new ArrayList<>();
-        Action action = new Action();
-        action.setName("setUp");
-        action.setParameters(new ArrayList<>());
+        Action action = new Action("setUp", new ArrayList<>());
         actionList.add(action);
 
-        return signalSpec;
+        return new SignalRequest(actionList);
     }
 
     private Signal getSampleSignal(SignalRequest signalSpec) {
         Signal signal = new Signal();
         String jsonActions = null;
         try {
-            jsonActions = objectMapper.writeValueAsString(signalSpec.getActions());
+            jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

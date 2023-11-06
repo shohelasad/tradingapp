@@ -28,7 +28,7 @@ public class SignalService {
     public SignalResponse saveSignal(SignalRequest signalSpec) {
         try {
             Signal signal = new Signal();
-            String jsonActions = objectMapper.writeValueAsString(signalSpec.getActions());
+            String jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
             signal.setActions(jsonActions);
             return toDto(signalRepository.save(signal));
         } catch (Exception e) {

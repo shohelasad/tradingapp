@@ -46,15 +46,15 @@ public class SignalHandlerImpl implements SignalHandler {
 
     private void processSignal(List<Action> actions) {
         actions.forEach(action -> {
-            String actionName = action.getName();
+            String actionName = action.name();
             switch (actionName) {
                 case "setUp":
                     algo.setUp();
                     break;
                 case "setAlgoParam":
-                    if (action.getParameters().size() == 2) {
-                        int param = action.getParameters().get(0);
-                        int value = action.getParameters().get(1);
+                    if (action.parameters().size() == 2) {
+                        int param = action.parameters().get(0);
+                        int value = action.parameters().get(1);
                         algo.setAlgoParam(param, value);
                     }
                     break;

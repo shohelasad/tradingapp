@@ -48,12 +48,12 @@ public class SignalServiceTest {
         when(signalRepository.save(Mockito.any(Signal.class))).thenReturn(savedSignal);
         SignalResponse result = signalService.saveSignal(signalSpec);
 
-        assertEquals(savedSignal.getId(), result.getId());
+        assertEquals(savedSignal.getId(), result.id());
     }
 
     @Test
     public void testSaveSignalWithInvalidData() throws Exception {
-        SignalRequest signalSpec = new SignalRequest(); // Invalid data
+        SignalRequest signalSpec = new SignalRequest(new ArrayList<>()); // Invalid data
         when(signalRepository.save(Mockito.any(Signal.class))).thenThrow(new IllegalArgumentException("Invalid signal data"));
         try {
             signalService.saveSignal(signalSpec);
@@ -87,21 +87,18 @@ public class SignalServiceTest {
     }
 
     private SignalRequest getSampleSignalSpec() {
-        SignalRequest signalSpec = new SignalRequest();
         List<Action> actionList = new ArrayList<>();
-        Action action = new Action();
-        action.setName("setUp");
-        action.setParameters(new ArrayList<>());
+        Action action = new Action("setUp", new ArrayList<>());
         actionList.add(action);
 
-        return signalSpec;
+        return new SignalRequest(actionList);
     }
 
     private Signal getSampleSignal(SignalRequest signalSpec) {
         Signal signal = new Signal();
         String jsonActions = null;
         try {
-            jsonActions = objectMapper.writeValueAsString(signalSpec.getActions());
+            jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

@@ -57,51 +57,38 @@ public class SingnalHandlerTest {
     }
 
     private SignalRequest getSampleSignalSpec() {
-        SignalRequest signalSpec = new SignalRequest();
         List<Action> actionList = new ArrayList<>();
-
         // Add 'setUp' action
-        Action setUpAction = new Action();
-        setUpAction.setName("setUp");
-        setUpAction.setParameters(new ArrayList<>());
+        Action setUpAction = new Action("setUp", new ArrayList<>());
         actionList.add(setUpAction);
 
         // Add 'performCalc' action
-        Action performCalcAction = new Action();
-        performCalcAction.setName("performCalc");
-        performCalcAction.setParameters(new ArrayList<>());
+        Action performCalcAction = new Action("performCalc", new ArrayList<>());
         actionList.add(performCalcAction);
 
         // Add 'submitToMarket' action
-        Action submitToMarketAction = new Action();
-        submitToMarketAction.setName("submitToMarket");
-        submitToMarketAction.setParameters(new ArrayList<>());
+        Action submitToMarketAction = new Action("submitToMarket", new ArrayList<>());
         actionList.add(submitToMarketAction);
 
         // Add 'setAlgoParam' action with parameters
-        Action setAlgoParamAction = new Action();
-        setAlgoParamAction.setName("setAlgoParam");
         List<Integer> parameters = new ArrayList<>();
         parameters.add(1);
         parameters.add(60);
-        setAlgoParamAction.setParameters(parameters);
+        Action setAlgoParamAction = new Action("setAlgoParam", parameters);
         actionList.add(setAlgoParamAction);
 
         // Add 'reverse' action
-        Action reverseAction = new Action();
-        reverseAction.setName("reverse");
-        reverseAction.setParameters(new ArrayList<>());
+        Action reverseAction = new Action("reverse", new ArrayList<>());
         actionList.add(reverseAction);
 
-        signalSpec.setActions(actionList);
-        return signalSpec;
+        return new SignalRequest(actionList);
     }
 
     private Signal getSampleSignal(SignalRequest signalSpec) {
         Signal signal = new Signal();
         String jsonActions = null;
         try {
-            jsonActions = objectMapper.writeValueAsString(signalSpec.getActions());
+            jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

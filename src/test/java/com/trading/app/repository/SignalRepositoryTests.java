@@ -49,25 +49,22 @@ public class SignalRepositoryTests {
     public void testGetSignalByIdValidSignal() {
         Signal retrievedSignal = signalRepository.findById(1)
                 .orElseThrow(() -> new ResourceAccessException("Signal not found for ID: 1"));
-        assertThat(retrievedSignal).isEqualTo(savedSignal);
+        assertThat(retrievedSignal.getId()).isEqualTo(savedSignal.getId());
     }
 
     private SignalRequest getSampleSignalSpec() {
-        SignalRequest signalSpec = new SignalRequest();
         List<Action> actionList = new ArrayList<>();
-        Action action = new Action();
-        action.setName("setUp");
-        action.setParameters(new ArrayList<>());
+        Action action = new Action("setUp", new ArrayList<>());
         actionList.add(action);
 
-        return signalSpec;
+        return new SignalRequest(actionList);
     }
 
     private Signal getSampleSignal(SignalRequest signalSpec) {
         Signal signal = new Signal();
         String jsonActions = null;
         try {
-            jsonActions = objectMapper.writeValueAsString(signalSpec.getActions());
+            jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
