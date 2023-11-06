@@ -7,7 +7,6 @@ import com.trading.app.exception.ResourceNotFoundException;
 import com.trading.app.repository.SignalRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 
 @Slf4j
 @Service
