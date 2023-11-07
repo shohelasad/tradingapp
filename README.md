@@ -79,7 +79,8 @@ Method type: POST
 
 Request body:
 
-``` {
+```
+{
   "actions": [
     { "name": "setUp", "parameters": [] },
     { "name": "setAlgoParam", "parameters": [1, 60] },
