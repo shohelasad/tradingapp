@@ -16,11 +16,11 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class SignalService {
+public class SignalServiceImpl implements SignalService {
     private final SignalRepository signalRepository;
     private final ObjectMapper objectMapper;
 
-    public SignalService(SignalRepository signalRepository, ObjectMapper objectMapper) {
+    public SignalServiceImpl(SignalRepository signalRepository, ObjectMapper objectMapper) {
         this.signalRepository = signalRepository;
         this.objectMapper = objectMapper;
     }

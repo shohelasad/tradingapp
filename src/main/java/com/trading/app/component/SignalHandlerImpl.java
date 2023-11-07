@@ -1,4 +1,4 @@
-package com.trading.app.util;
+package com.trading.app.component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.Action;
 import com.trading.app.entity.Signal;
 import com.trading.app.lib.Algo;
-import com.trading.app.service.SignalService;
+import com.trading.app.service.SignalServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +15,11 @@ import java.util.List;
 @Slf4j
 @Service
 public class SignalHandlerImpl implements SignalHandler {
-    private final SignalService signalService;
+    private final SignalServiceImpl signalService;
     private final ObjectMapper objectMapper;
     private final Algo algo;
 
-    public SignalHandlerImpl(SignalService signalService, ObjectMapper objectMapper) {
+    public SignalHandlerImpl(SignalServiceImpl signalService, ObjectMapper objectMapper) {
         this.signalService = signalService;
         this.objectMapper = objectMapper;
         this.algo = new Algo();

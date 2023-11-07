@@ -3,9 +3,10 @@ package com.trading.app.controller;
 import com.trading.app.dto.SignalRequest;
 import com.trading.app.dto.SignalResponse;
 import com.trading.app.exception.BadRequestException;
-import com.trading.app.util.SignalHandler;
-import com.trading.app.util.SignalHandlerImpl;
+import com.trading.app.component.SignalHandler;
+import com.trading.app.component.SignalHandlerImpl;
 import com.trading.app.service.SignalService;
+import com.trading.app.service.SignalServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,8 @@ public class SignalController {
     private final SignalService signalService;
     private final SignalHandler signalHandler;
 
-    public SignalController(SignalService signalService, SignalHandlerImpl signalHandlerImpl) {
-        this.signalService = signalService;
+    public SignalController(SignalServiceImpl signalServiceImpl, SignalHandlerImpl signalHandlerImpl) {
+        this.signalService = signalServiceImpl;
         this.signalHandler = signalHandlerImpl;
     }
 

@@ -5,7 +5,7 @@ POST: "/api/signals/{signalId}": This endpoint is designed to receive signals, a
 POST: "/api/signals": This endpoint is used for creating new signals based on a Signal Specification. The data is saved as JSON in a PostgreSQL JSONB column for better manageability.
 * To ensure flexibility and incremental addition of signals, I designed a database structure that allows you to easily add and manage signals as needed.
 
-## Used Technologies
+### Used Technologies
 
 * Java 17
 * Spring Boot
@@ -15,7 +15,7 @@ POST: "/api/signals": This endpoint is used for creating new signals based on a 
 * Flyway database migration
 * Docker
 
-# How to run
+### How to run
 
 ### Package the application as a JAR file
 
@@ -41,12 +41,12 @@ mvn test -Dspring.profiles.active=test
 docker system prune
 ```
 
-## Testing Coverage
+### Testing Coverage
 
 * Implement unit tests, integration tests with JUnit5.
 * Implement JaCoCo to measure code coverage and ensure that critical code paths are tested.
 
-## Design patterns
+### Design patterns
 
 * RESTful API Design Pattern: REST (Representational State Transfer) expose the endpoints restfully way
 * Controller-Service-Repository Pattern:
@@ -57,14 +57,40 @@ docker system prune
 * Error Handling Patterns: Implement a consistent error-handling mechanism using Spring's exception handling. Return meaningful error responses in JSON format.
 * Dependency Injection (DI) Pattern: Implement DI with constructor injection
 
-## Production ready
+### Production ready
 
 * Database PostgresSQL is configured for dockerige
 * Flyway in implement for data migration
 
-## API Definition
+### API Definition
 
 OpenAPI implemented for API definition
 * http://localhost:8080/api-docs
 * http://localhost:8080/swagger-ui/index.html
 
+
+### Sample API Request:
+
+Creating new Signal from specification:
+
+Endpoint:"/api/signals"
+
+Method type: POST
+
+Request body:
+
+```{
+  "actions": [
+    { "name": "setUp", "parameters": [] },
+    { "name": "setAlgoParam", "parameters": [1, 60] },
+    { "name": "performCalc", "parameters": [] },
+    { "name": "submitToMarket", "parameters": [] }
+  ]
+}
+```
+
+Sending signal to execute algo actions
+
+Endpoint:"/api/signals/1"
+
+Method type: POST
