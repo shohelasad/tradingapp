@@ -94,3 +94,5 @@ Sending signal to execute algo actions
 Endpoint:"/api/signals/1"
 
 Method type: POST
+
+END!
