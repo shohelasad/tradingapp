@@ -1,10 +1,9 @@
 package com.trading.app.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.Action;
 import com.trading.app.dto.SignalRequest;
 import com.trading.app.entity.Signal;
+import com.trading.app.util.ObjectMapperUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +20,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class SignalRepositoryTests {
-
+public class SignalRepositoryTest {
     @Autowired
     private SignalRepository signalRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
     private Signal savedSignal;
+
     @BeforeEach
     void setUp() {
         SignalRequest signalSpec = getSampleSignalSpec();
-        Signal mockSignal = getSampleSignal(signalSpec);
+        Signal mockSignal = ObjectMapperUtil.covertToSignal(signalSpec);
         savedSignal = signalRepository.save(mockSignal);
     }
 
     @Test
     public void testSaveSignal() {
         SignalRequest signalSpec = getSampleSignalSpec();
-        Signal mockSignal = getSampleSignal(signalSpec);
+        Signal mockSignal = ObjectMapperUtil.covertToSignal(signalSpec);
         savedSignal = signalRepository.save(mockSignal);
         Signal retrievedSignal = signalRepository.findById(savedSignal.getId()).orElse(null);
         assertEquals(savedSignal.getId(), retrievedSignal.getId());
@@ -58,18 +54,5 @@ public class SignalRepositoryTests {
         actionList.add(action);
 
         return new SignalRequest(actionList);
-    }
-
-    private Signal getSampleSignal(SignalRequest signalSpec) {
-        Signal signal = new Signal();
-        String jsonActions = null;
-        try {
-            jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        signal.setActions(jsonActions);
-
-        return signal;
     }
 }

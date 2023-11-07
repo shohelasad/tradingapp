@@ -1,6 +1,5 @@
 package com.trading.app.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.Action;
 import com.trading.app.dto.SignalRequest;
@@ -8,6 +7,7 @@ import com.trading.app.dto.SignalResponse;
 import com.trading.app.entity.Signal;
 import com.trading.app.exception.ResourceNotFoundException;
 import com.trading.app.repository.SignalRepository;
+import com.trading.app.util.ObjectMapperUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -30,19 +30,19 @@ public class SignalServiceTest {
     private SignalRepository signalRepository;
 
     private ObjectMapper objectMapper;
-    private SignalService signalService;
+    private SignalServiceImpl signalService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         objectMapper = new ObjectMapper();
-        signalService = new SignalService(signalRepository, objectMapper);
+        signalService = new SignalServiceImpl(signalRepository, objectMapper);
     }
 
     @Test
     public void testSaveSignal() throws Exception {
         SignalRequest signalSpec = getSampleSignalSpec();
-        Signal savedSignal = getSampleSignal(signalSpec);
+        Signal savedSignal = ObjectMapperUtil.covertToSignal(signalSpec);
         savedSignal.setId(1);
 
         when(signalRepository.save(Mockito.any(Signal.class))).thenReturn(savedSignal);
@@ -92,18 +92,5 @@ public class SignalServiceTest {
         actionList.add(action);
 
         return new SignalRequest(actionList);
-    }
-
-    private Signal getSampleSignal(SignalRequest signalSpec) {
-        Signal signal = new Signal();
-        String jsonActions = null;
-        try {
-            jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        signal.setActions(jsonActions);
-
-        return signal;
     }
 }

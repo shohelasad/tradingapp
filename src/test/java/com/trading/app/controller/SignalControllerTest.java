@@ -1,15 +1,12 @@
 package com.trading.app.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trading.app.dto.Action;
 import com.trading.app.dto.SignalRequest;
-import com.trading.app.entity.Signal;
-import com.trading.app.service.SignalService;
-import com.trading.app.util.SignalHandlerImpl;
+import com.trading.app.service.SignalServiceImpl;
+import com.trading.app.component.SignalHandlerImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -36,12 +33,9 @@ class SignalControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private SignalService signalService;
+    private SignalServiceImpl signalService;
 
     private SignalHandlerImpl signalHandler;
-
-    @InjectMocks
-    private SignalController signalController;
 
     @BeforeEach
     void setup() {
@@ -78,18 +72,5 @@ class SignalControllerTest {
         actionList.add(action);
 
         return new SignalRequest(actionList);
-    }
-
-    private Signal getSampleSignal(SignalRequest signalSpec) {
-        Signal signal = new Signal();
-        String jsonActions = null;
-        try {
-            jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        signal.setActions(jsonActions);
-
-        return signal;
     }
 }

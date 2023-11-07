@@ -16,23 +16,23 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class SignalService {
+public class SignalServiceImpl implements SignalService {
     private final SignalRepository signalRepository;
     private final ObjectMapper objectMapper;
 
-    public SignalService(SignalRepository signalRepository, ObjectMapper objectMapper) {
+    public SignalServiceImpl(SignalRepository signalRepository, ObjectMapper objectMapper) {
         this.signalRepository = signalRepository;
         this.objectMapper = objectMapper;
     }
 
     public SignalResponse saveSignal(SignalRequest signalSpec) {
         try {
-            Signal signal = new Signal();
             String jsonActions = objectMapper.writeValueAsString(signalSpec.actions());
+            Signal signal = new Signal();
             signal.setActions(jsonActions);
             return toDto(signalRepository.save(signal));
-        } catch (Exception e) {
-            log.info("Invalid signal data: " + e.getMessage());
+        } catch (JsonProcessingException e) {
+            log.error("Invalid signal data: " + e.getMessage());
             throw new IllegalArgumentException("Invalid signal data: " + e.getMessage());
         }
     }
@@ -50,7 +50,7 @@ public class SignalService {
                 actions = objectMapper.readValue(signal.getActions(), new TypeReference<List<Action>>() {});
                 return new SignalResponse(signal.getId(), actions);
             } catch (JsonProcessingException e) {
-                log.info("Invalid signal data: " + e.getMessage());
+                log.error("Invalid signal data: " + e.getMessage());
                 throw new RuntimeException(e);
             }
         }
